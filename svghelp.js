@@ -62,6 +62,7 @@ class SVGHelp {
     stroke = new Stroke;
     fill = new Fill;
     svg;    // stores the svg that all the shape functions add to
+    group;      // stores a group
     last;   // stores a reference to the last element added to the svg
 
     constructor(w, h, vw, vh) {
@@ -77,72 +78,110 @@ class SVGHelp {
         this.svg.innerHTML = "";
     }
 
+    openGroup() {
+        this.group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    }
+
+    closeGroup() {
+        this.last = this.svg.appendChild(this.group);
+        this.group = undefined;
+        return this.last;
+    }
+
     line(x1, y1, x2, y2) {
-        let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x1);
-        line.setAttribute("y1", y1);
-        line.setAttribute("x2", x2);
-        line.setAttribute("y2", y2);
-        this.stroke.setAttributes(line);
-        return this.last = this.svg.appendChild(line);
+        let shape = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        shape.setAttribute("x1", x1);
+        shape.setAttribute("y1", y1);
+        shape.setAttribute("x2", x2);
+        shape.setAttribute("y2", y2);
+        this.stroke.setAttributes(shape);
+        if (this.group == undefined) {
+            return this.last = this.svg.appendChild(shape);
+        } else {
+            return this.last = this.group.appendChild(shape);
+        }
+        //return line;
     }
 
     polyline(points) {
-        let polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-        polyline.setAttribute("points", points);
-        this.stroke.setAttributes(polyline);
-        this.fill.setAttributes(polyline);
-        return this.last = this.svg.appendChild(polyline);
+        let shape = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+        shape.setAttribute("points", points);
+        this.stroke.setAttributes(shape);
+        this.fill.setAttributes(shape);
+        if (this.group == undefined) {
+            return this.last = this.svg.appendChild(shape);
+        } else {
+            return this.last = this.group.appendChild(shape);
+        }
     }
 
-    polygon(points, stroke, fill) {
-        let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        polygon.setAttribute("points", points);
-        this.stroke.setAttributes(polygon);
-        this.fill.setAttributes(polygon);
-        return this.last = this.svg.appendChild(polygon);
+    polygon(points) {
+        let shape = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        shape.setAttribute("points", points);
+        this.stroke.setAttributes(shape);
+        this.fill.setAttributes(shape);
+        if (this.group == undefined) {
+            return this.last = this.svg.appendChild(shape);
+        } else {
+            return this.last = this.group.appendChild(shape);
+        }
     }
 
     rect(x, y, w, h) {
-        let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        rect.setAttribute("x", x);
-        rect.setAttribute("y", y);
-        rect.setAttribute("width", w);
-        rect.setAttribute("height", h);
-        this.stroke.setAttributes(rect);
-        this.fill.setAttributes(rect);
-        return this.last = this.svg.appendChild(rect);
+        let shape = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        shape.setAttribute("x", x);
+        shape.setAttribute("y", y);
+        shape.setAttribute("width", w);
+        shape.setAttribute("height", h);
+        this.stroke.setAttributes(shape);
+        this.fill.setAttributes(shape);
+        if (this.group == undefined) {
+            return this.last = this.svg.appendChild(shape);
+        } else {
+            return this.last = this.group.appendChild(shape);
+        }
     }
 
     circle(r, x, y) {
-        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("r", r);
-        circle.setAttribute("cx", x);
-        circle.setAttribute("cy", y);
-        this.stroke.setAttributes(circle);
-        this.fill.setAttributes(circle);
-        return this.last = this.svg.appendChild(circle);
+        let shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        shape.setAttribute("r", r);
+        shape.setAttribute("cx", x);
+        shape.setAttribute("cy", y);
+        this.stroke.setAttributes(shape);
+        this.fill.setAttributes(shape);
+        if (this.group == undefined) {
+            return this.last = this.svg.appendChild(shape);
+        } else {
+            return this.last = this.group.appendChild(shape);
+        }
     }
 
     ellipse(x, y, rx, ry) {
-        let ellipse = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-        ellipse.setAttribute("cx", x);
-        ellipse.setAttribute("cy", y);
-        ellipse.setAttribute("rx", rx);
-        ellipse.setAttribute("ry", ry);
-        this.stroke.setAttributes(ellipse);
-        this.fill.setAttributes(ellipse);
-        return this.last = this.svg.appendChild(ellipse);
+        let shape = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+        shape.setAttribute("cx", x);
+        shape.setAttribute("cy", y);
+        shape.setAttribute("rx", rx);
+        shape.setAttribute("ry", ry);
+        this.stroke.setAttributes(shape);
+        this.fill.setAttributes(shape);
+        if (this.group == undefined) {
+            return this.last = this.svg.appendChild(shape);
+        } else {
+            return this.last = this.group.appendChild(shape);
+        }
     }
 
     text(x, y, t) {
-        let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", x);
-        text.setAttribute("y", y);
-        this.stroke.setAttributes(text);
-        this.fill.setAttributes(text);
-        this.text.appendChild(document.createTextNode(t));
-        return this.last = this.svg.appendChild(text);
+        let shape = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        shape.setAttribute("x", x);
+        shape.setAttribute("y", y);
+        this.stroke.setAttributes(shape);
+        this.fill.setAttributes(shape);
+        this.shape.appendChild(document.createTextNode(t));
+        if (this.group == undefined) {
+            return this.last = this.svg.appendChild(shape);
+        } else {
+            return this.last = this.group.appendChild(shape);
+        }
     }
 }
-
